@@ -1,23 +1,32 @@
 import win32com.client as wincl
 
-voice = wincl.Dispatch("SAPI.SpVoice")
+class Sound:
+  def __init__(self):
+    self.voice = wincl.Dispatch("SAPI.SpVoice")
 
-def speak(text):
-  voice.Speak(text)
-  print('Speaked: ' + text)
+  def speak(self, text):
+    print(f'Speaked: {text} [Volume: {self.voice.Volume}] [Rate: {self.voice.Rate}]')
+    self.voice.Speak(text)
 
-def setting(volume, rate):
-  if 0 <= volume & volume <= 100:
-    voice.Volume = volume
-  elif volume == None:
-    print('Voice: No parameter specified.')
-  else:
-    print('Voice: Incorrect parameter was specified.')
+  # default volume=100(0~100), rate=0(-10~10)
+  def setting(self, volume=None, rate=None):
+    if volume == None:
+      print('Voice: No parameter specified.')
+    elif 0 <= volume & volume <= 100:
+      self.voice.Volume = volume
+      print(f'Voice: Volume changed to {volume}.')
+    else:
+      print('Voice: Incorrect parameter was specified.')
 
-  if -10 <= rate & rate <= 10:
-    voice.Rate = rate
-  elif rate == None:
-    print('Rate: No parameter specified.')
-  else:
-    print('Rate: Incorrect parameter was specified.')
+    if rate == None:
+      print('Rate: No parameter specified.')
+    elif -10 <= rate & rate <= 10:
+      self.voice.Rate = rate
+      print(f'Voice: Rate changed to {rate}.')
+    else:
+      print('Rate: Incorrect parameter was specified.')
 
+if __name__ == "__main__":
+  sound = Sound()
+  sound.setting(100, 2)
+  sound.speak("おはよう")
