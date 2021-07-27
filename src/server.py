@@ -12,7 +12,6 @@ class Server:
         self.server.bind((self.host, self.port))
         self.server.listen(5)
 
-        self.sound = Sound()
 
     def listen_for_clients(self):
         print('Listening...')
@@ -24,6 +23,8 @@ class Server:
             Thread(target=self.handle_client, args=(client, addr)).start()
 
     def handle_client(self, client_socket, address):
+        global sound
+        sound = Sound()
         size = 1024
         while True:
             try:
@@ -31,27 +32,32 @@ class Server:
                 if 'q^' in data.decode():    
                     print('Received request for exit from: ' 
                             + str(address[0]) + ':' + str(address[1]))
-                    client_socket.sendall('q^'.encode())
+                    client_socket.sendall('q^\n'.encode())
+                    sound.quit()
                     break
 
                 else:
                     # send getting after receiving from client
-                    client_socket.sendall('Welcome to server'.encode())
+                    client_socket.sendall('Welcome to server\n'.encode())
 
                     print('Received: ' + data.decode() + ' from: ' 
                             + str(address[0]) + ':' + str(address[1]))
-                    json_data = json.loads(data.decode())
-                    for li in json_data:
-                        if li.get("text") is not None:
-                            self.sound.speak(li["text"])
-
-                        if li.get("setting") is not None:
-                            if li.get("setting").get("volume") is not None:
-                                self.sound.setting(volume=li["setting"]["volume"])
-                            if li.get("setting").get("rate") is not None:
-                                self.sound.setting(rete=li["setting"]["rate"])
+                    # Json Decoder
+                    try:
+                        json_data = json.loads(data.decode())
+                        for li in json_data:
+                            if li.get("text") is not None:
+                                sound.speak(li["text"])
+                            if li.get("setting") is not None:
+                                if li.get("setting").get("volume") is not None:
+                                    sound.setting(volume=li["setting"]["volume"])
+                                if li.get("setting").get("rate") is not None:
+                                    sound.setting(rate=li["setting"]["rate"])
+                    except json.JSONDecodeError as e:
+                        print("ERROR: json.JSONDecodeError")
 
             except socket.error:
+                sound.quit()
                 client_socket.close()
                 return False
 
