@@ -1,2 +1,2 @@
 [{"text":"おはよう"}]
- [{"setting":{"volume":75,"rate":5}}]
+[{"setting":{"volume":75,"rate":5}}]
