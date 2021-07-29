@@ -37,9 +37,6 @@ class Server:
                     break
 
                 else:
-                    # send getting after receiving from client
-                    client_socket.sendall('Welcome to server\n'.encode())
-
                     print('Received: ' + data.decode() + ' from: ' 
                             + str(address[0]) + ':' + str(address[1]))
                     # Json Decoder
@@ -53,7 +50,9 @@ class Server:
                                     sound.setting(volume=li["setting"]["volume"])
                                 if li.get("setting").get("rate") is not None:
                                     sound.setting(rate=li["setting"]["rate"])
+                        client_socket.sendall('OK\n'.encode())
                     except json.JSONDecodeError as e:
+                        client_socket.sendall('Error: Json decode error.\n'.encode())
                         print("ERROR: json.JSONDecodeError")
 
             except socket.error:
