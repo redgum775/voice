@@ -10,21 +10,19 @@ class Sound:
 
   # default volume=100(0~100), rate=0(-10~10)
   def setting(self, volume=None, rate=None):
-    if volume == None:
-      print('Voice: No parameter specified.')
-    elif 0 <= volume & volume <= 100:
-      self.voice.Volume = volume
-      print(f'Voice: Volume changed to {volume}.')
-    else:
-      print('Voice: Incorrect parameter was specified.')
+    if volume is not None:
+      if 0 <= volume & volume <= 100:
+        self.voice.Volume = volume
+        print(f'Voice: Volume changed to {volume}.')
+      else:
+        print('Voice: Incorrect parameter was specified.')
 
-    if rate == None:
-      print('Rate: No parameter specified.')
-    elif -10 <= rate & rate <= 10:
-      self.voice.Rate = rate
-      print(f'Voice: Rate changed to {rate}.')
-    else:
-      print('Rate: Incorrect parameter was specified.')
+    if rate is not None:
+      if -10 <= rate & rate <= 10:
+        self.voice.Rate = rate
+        print(f'Voice: Rate changed to {rate}.')
+      else:
+        print('Rate: Incorrect parameter was specified.')
 
 if __name__ == "__main__":
   sound = Sound()
