@@ -32,7 +32,6 @@ class Server:
                 if 'q^' in data.decode():    
                     print('Received request for exit from: ' 
                             + str(address[0]) + ':' + str(address[1]))
-                    client_socket.sendall('q^\n'.encode())
                     sound.quit()
                     break
 
@@ -46,14 +45,14 @@ class Server:
                         json_data = json.loads(data.decode())
                         for li in json_data:
                             if li.get("text") is not None:
-                                self.sound.speak(li["text"])
+                                sound.speak(li["text"])
                                 sendText += f'Speak: {li["text"]}\t'
                             if li.get("setting") is not None:
                                 if li.get("setting").get("volume") is not None:
-                                    self.sound.setting(volume=li["setting"]["volume"])
+                                    sound.setting(volume=li["setting"]["volume"])
                                     sendText += f'Setting: Volume {li["setting"]["volume"]}\t'
                                 if li.get("setting").get("rate") is not None:
-                                    self.sound.setting(rate=li["setting"]["rate"])
+                                    sound.setting(rate=li["setting"]["rate"])
                                     sendText += f'Setting: Rate {li["setting"]["rate"]}\t'
                         sendText += '\n'
                         client_socket.sendall(sendText.encode())
@@ -69,11 +68,7 @@ class Server:
         client_socket.sendall(
             'Received request for exit. Deleted from server threads'.encode()
         )
-
-        # send quit message to client too
-        client_socket.sendall(
-            'q^'.encode()
-        )
+        
         client_socket.close()
 
 
