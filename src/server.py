@@ -36,20 +36,24 @@ class Server:
 
                 else:
                     # send getting after receiving from client
-                    client_socket.sendall('Welcome to server'.encode())
-
                     print('Received: ' + data.decode() + ' from: ' 
                             + str(address[0]) + ':' + str(address[1]))
+                    
+                    sendText = ""
+
                     json_data = json.loads(data.decode())
                     for li in json_data:
                         if li.get("text") is not None:
                             self.sound.speak(li["text"])
-
+                            sendText += f'Speak: {li["text"]}\n'
                         if li.get("setting") is not None:
                             if li.get("setting").get("volume") is not None:
                                 self.sound.setting(volume=li["setting"]["volume"])
+                                sendText += f'Setting: Volume {li["setting"]["volume"]}\n'
                             if li.get("setting").get("rate") is not None:
-                                self.sound.setting(rete=li["setting"]["rate"])
+                                self.sound.setting(rate=li["setting"]["rate"])
+                                sendText += f'Setting: Rate {li["setting"]["rate"]}\n'
+                    client_socket.sendall(sendText.encode())
 
             except socket.error:
                 client_socket.close()
